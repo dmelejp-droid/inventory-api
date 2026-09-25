@@ -32,7 +32,7 @@ public class DataSeeder implements CommandLineRunner {
                 productRepository.save(product);
             }
             
-            System.out.println("✅ 50 productos ficticios creados con Faker!");
+            System.out.println("50 productos ficticios creados con Faker!");
         }
     }
 }
