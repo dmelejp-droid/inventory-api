@@ -34,19 +34,19 @@ public class KafkaConsumer {
                 if (product.getStock() >= quantity) {
                     product.setStock(product.getStock() - quantity);
                     productRepository.save(product);
-                    System.out.println("✅ [INVENTARIO] Stock descontado. Aprobando orden " + orderId);
+                    System.out.println("[INVENTARIO] Stock descontado. Aprobando orden " + orderId);
                     kafkaTemplate.send("topic_ordenes_respuestas", "{\"orderId\":" + orderId + ", \"status\":\"APPROVED\"}");
                 } else {
-                    System.out.println("❌ [INVENTARIO] Sin stock. Rechazando orden " + orderId);
+                    System.out.println("[INVENTARIO] Sin stock. Rechazando orden " + orderId);
                     kafkaTemplate.send("topic_ordenes_respuestas", "{\"orderId\":" + orderId + ", \"status\":\"REJECTED\"}");
                 }
             } else {
-                System.out.println("❌ [INVENTARIO] Producto no existe. Rechazando orden " + orderId);
+                System.out.println("[INVENTARIO] Producto no existe. Rechazando orden " + orderId);
                 kafkaTemplate.send("topic_ordenes_respuestas", "{\"orderId\":" + orderId + ", \"status\":\"REJECTED\"}");
             }
 
         } catch (Exception e) {
-            System.out.println("❌ [KAFKA] Error procesando el mensaje: " + e.getMessage());
+            System.out.println("[KAFKA] Error procesando el mensaje: " + e.getMessage());
         }
     }
 }
