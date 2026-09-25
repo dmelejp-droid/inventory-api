@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ProductController {
 
     // Le pedimos a Spring que nos "inyecte" el repositorio que creamos antes
@@ -45,6 +45,23 @@ public class ProductController {
         if (productRepository.existsById(id)) {
             productRepository.deleteById(id);
             return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // 5. Descontar stock (PUT /api/products/1/deduct?quantity=1)
+    @PutMapping("/{id}/deduct")
+    public ResponseEntity<Product> deductStock(@PathVariable Long id, @RequestParam int quantity) {
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            if (product.getStock() >= quantity) {
+                product.setStock(product.getStock() - quantity);
+                return ResponseEntity.ok(productRepository.save(product));
+            } else {
+                return ResponseEntity.badRequest().build(); // Sin stock suficiente
+            }
         } else {
             return ResponseEntity.notFound().build();
         }
